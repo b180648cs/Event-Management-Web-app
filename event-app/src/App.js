@@ -21,27 +21,35 @@ import Dashboard from './Dashboard/AdminDashBoard';
 import Dashboard1 from './Dashboard/AdminHome';
 import CreateEvent from './Dashboard/CreateEvent';
 import AttendanceMarker from './Dashboard/AttendanceMarker'
+import Signup from './components/Signup';
+import { AuthContext } from './contexts/authcontext';
+import AuthContextProvider from './contexts/authcontext'
 
 function App() {
   return (
     <div className="App">
-      <Router>
-        <Route exact path="/" component={BeforeLogin}></Route>
-        <Route path="/login" component={AfterLogin}></Route>
+      
+      <Router  >
+        <AuthContextProvider>
+        <Route exact path="/" render={props=><BeforeLogin {...props} />}></Route>
+        <Route path="/login" render={props=><AfterLogin {...props} />}></Route>
         <Route path="/eventsdetail" component={EventsDetail}></Route>
         <Route path="/register" component={EventRegister}></Route>
         <Route  path="/detail" component={EventDes}></Route>
         <Route path="/validation" component={Validation}></Route>
         <Route path="/dashboard" component={UseashBoard}></Route>
-        <Route path="/loginPage" component={LoginPage}></Route>
+        <Route path="/loginPage" render={props=><LoginPage {...props} />}></Route>
+        
         <Route path="/loginadmin" component={AdminLoginPage}></Route>
         <Route path="/admindashboard" component={Dashboard}></Route>
         <Route path="/adminhome" component={Dashboard1}></Route>
         <Route path="/createevent" component={CreateEvent}></Route>
         <Route path="/attendance" component={AttendanceMarker}></Route>
+        <Route path="/signup" component={Signup}></Route>
 
-        
+        </AuthContextProvider>
       </Router>
+  
 
     </div>
   );

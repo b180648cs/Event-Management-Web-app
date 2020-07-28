@@ -1,39 +1,95 @@
 import React, { Component } from 'react'
-
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import axios from 'axios'
+import { Link, useHistory } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
+import { AuthContext } from '../contexts/authcontext';
 export class LoginPage extends Component {
-    state={
-        isMarked:false,
-        ans:"/login"
-    }
-    onSubmit =()=>
-    {
-        this.setState({isMarked:!this.state.isMarked,ans:"/loginadmin"})
-    }
-    render() {
-        return (
-            <div style={{margin:"100px",marginLeft:"500px",marginRight:"500px"}}>
-                <h1 style={{fontWeight:"normal"}}>Login</h1>
-                <form>
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                                 </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Password</label>
-                            <input type="password" class="form-control" id="exampleInputPassword1" />
-                                 </div>
-                            <div class="form-group form-check">
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1" onClick={this.onSubmit} />
-                                    <label class="form-check-label" for="exampleCheck1">Are you admin</label>
-                                           </div>
-                                          
-                                           <form method="get" action={this.state.ans}> <button type="submit" class="btn btn-primary">Login</button></form>
-                                           
-                                      </form>
-                        </div>
-        )
-    }
-}
+  state = {
+    name: '',
+    email: '',
+    password: '',
+    redirect: ''
 
-export default LoginPage
+  }
+  componentDidMount()
+  {
+    this.state.redirect=this.context;
+    //console.log(this.state.redirect)
+  }
+  static contextType=AuthContext
+
+  parseJwt = (token) => {
+    if (!token) { return; }
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace('-', '+').replace('_', '/');
+    return JSON.parse(window.atob(base64));
+  }
+  GetDeatils = (det) => {
+    axios.get('/user/' + det).then(res => {
+      const data1 = res['data'];
+      const data2 = data1[0];
+      if (data2['isAdmin'] == true) {
+       const {toogleAuth,isAuth,setValue}=this.state.redirect;
+       setValue(data2);
+        this.props.history.push('/loginadmin')
+
+      }
+      else {//setAns(data2)
+        //setValue(data2)
+        //toogleAuth();
+        // console.log(state);
+
+
+        this.props.history.push('/login')
+      }
+    }
+    )
+  }
+
+  OnClick = (e) => {
+
+    e.preventDefault();
+    
+    axios.post('/signin', {
+      email: this.state.email,
+      password: this.state.password,
+
+    }).then(res => {
+      const data = res['data'];
+      //console.log(data['token'])
+      const object = this.parseJwt(data['token'])
+      this.GetDeatils(object['_id'])
+      //history.push('/login')
+    })
+  }
+  render() {
+    const {user,setValue,toogleAuth,isAuth}=this.context
+    //console.log(user);
+
+    return (
+      <div style={{ marginTop: "70px", marginLeft: "570px", marginRight: "700px", textAlign: "center" }}>
+        <h1>Login</h1>
+        <Form >
+          <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+            <Label for="exampleEmail" className="mr-sm-2">Email</Label>
+            <Input type="text" name="email" id="exampleEmail" placeholder="something@idk.cool" value={this.state.email} onChange={(e) => this.setState({ email: e.target.value })} />
+          </FormGroup>
+          <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+            <Label for="examplePassword" className="mr-sm-2">Password</Label>
+            <Input type="text" name="password" id="examplePassword" placeholder="don't tell!" value={this.state.password} onChange={(e) => this.setState({ password: e.target.value })} />
+
+          </FormGroup>
+          <button style={{ marginTop: "20px", width: "100px" }} onClick={this.OnClick}>Click</button>
+
+        </Form>
+        <form method="get" action="/signup" style={{ marginTop: "30px" }}>
+          <input type="submit" value="Create Account" />
+        </form>
+
+      </div>
+    );
+
+  }
+}
+export default withRouter(LoginPage)
