@@ -23,9 +23,13 @@ export default function MediaCard(props) {
   const value=props.detail
   let history=useHistory()
   const changeRoute=()=>{
-      console.log("hshshhshs ")
+      console.log(value)
       history.push('/detail',{value:value,})
   }
+  const changeRegister=()=>{
+    console.log("hshshhshs ")
+    history.push('/register',{value:value,})
+}
   return (
     <Card className={classes.root}>
       <CardActionArea>
@@ -44,10 +48,10 @@ export default function MediaCard(props) {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button size="small" color="primary" >
+        <Button size="small" color="primary"  onClick={changeRoute}>
           Know more
         </Button>
-        <Button size="small" color="primary" >
+        <Button size="small" color="primary" onClick={changeRegister} >
           Register
         </Button>
       </CardActions>

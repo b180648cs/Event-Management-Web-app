@@ -14,7 +14,7 @@ export class LoginPage extends Component {
   }
   componentDidMount()
   {
-    this.state.redirect=this.context;
+    
     //console.log(this.state.redirect)
   }
   static contextType=AuthContext
@@ -30,8 +30,11 @@ export class LoginPage extends Component {
       const data1 = res['data'];
       const data2 = data1[0];
       if (data2['isAdmin'] == true) {
-       const {toogleAuth,isAuth,setValue}=this.state.redirect;
+       const {user,toogleAuth,isAuth,setValue,name}=this.context;
        setValue(data2);
+       toogleAuth(true)
+       console.log(user)
+       console.log(name)
         this.props.history.push('/loginadmin')
 
       }
@@ -40,8 +43,13 @@ export class LoginPage extends Component {
         //toogleAuth();
         // console.log(state);
 
-
-        this.props.history.push('/login')
+        const {user,toogleAuth,isAuth,setValue,changeColor,color1}=this.context;
+        setValue(data2);
+      
+        changeColor();
+        console.log(color1);
+        //console.log(user)
+     this.props.history.push('/login')
       }
     }
     )
@@ -64,7 +72,7 @@ export class LoginPage extends Component {
     })
   }
   render() {
-    const {user,setValue,toogleAuth,isAuth}=this.context
+    const {user,setValue,toogleAuth,isAuth,name,color1,changeColor}=this.context
     //console.log(user);
 
     return (
@@ -86,6 +94,7 @@ export class LoginPage extends Component {
         <form method="get" action="/signup" style={{ marginTop: "30px" }}>
           <input type="submit" value="Create Account" />
         </form>
+        
 
       </div>
     );

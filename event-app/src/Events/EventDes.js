@@ -1,11 +1,17 @@
-import React, { Component } from 'react'
+import React, { Component,useHistory } from 'react'
 import NavBar1 from '../components/NavBar1'
 
 
 export default function EventDes(props) {
-   const value=props.location.state;
-   const value1=value['value'];
+   const valu=props.location.state;
+   const value1=valu['value'];
    console.log(value1);
+   const value=props;
+  // let history=useHistory();
+   const changeRoute=()=>{
+       
+       props.history.push('/register',{value:value1})
+   }
     return (
         <div className="EventMain">
             <NavBar1></NavBar1>
@@ -21,7 +27,7 @@ export default function EventDes(props) {
                     <br></br>
 
                     <form method="get" action="/register">
-                        <button type="submit" className="btn5">Register</button>
+                        <button type="submit" className="btn5" onClick={changeRoute}>Register</button>
                     </form>
 
                 </div>
